@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "llm-chat-app-template",
+	"name": "adeinternet",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-10-08",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -12,6 +12,10 @@
 		"binding": "ASSETS",
 		"directory": "./public"
 	},
+	// Leads submitted on the site are written here. Create the namespace with:
+	//   npx wrangler kv namespace create LEADS
+	// then paste the printed id below and uncomment this block.
+	// "kv_namespaces": [{ "binding": "LEADS", "id": "PASTE_ID_HERE" }],
 	"observability": {
 		"enabled": true
 	},
