@@ -137,9 +137,9 @@ p{margin:0}
 .langs button[aria-pressed="true"]{background:var(--red); color:#fff}
 
 /* ---------- header ---------- */
+.sticky-top{position:sticky; top:env(safe-area-inset-top,0px); z-index:50}
 header.site{
-  position:sticky; top:env(safe-area-inset-top,0px); z-index:50;
-  background:rgba(8,8,10,.86); backdrop-filter:blur(14px);
+  background:rgba(8,8,10,.92); backdrop-filter:blur(14px);
   border-bottom:1px solid var(--line-soft);
 }
 header.site .wrap{display:flex; align-items:center; gap:18px; padding-block:11px}
@@ -147,12 +147,42 @@ header.site .wrap{display:flex; align-items:center; gap:18px; padding-block:11px
 .brand img{width:40px; height:40px; border-radius:50%}
 .brand b{font-family:var(--display); font-weight:800; font-size:17px; letter-spacing:-.01em; display:block; line-height:1.1}
 .brand span{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--fg-faint); font-weight:600}
-nav.main{display:flex; gap:26px}
-nav.main a{text-decoration:none; color:var(--fg-dim); font-size:14.5px; font-weight:500}
-nav.main a:hover{color:var(--fg)}
 header .btn{padding:11px 18px; min-height:42px; font-size:14px}
-@media(max-width:900px){ nav.main{display:none} }
 @media(max-width:560px){ header .btn-ghost{display:none} }
+
+/* section directory — two groups, always visible, scrolls sideways on phones */
+.secnav{position:relative; background:rgba(10,10,12,.95); backdrop-filter:blur(14px); border-bottom:1px solid var(--line-soft)}
+/* hints that the bar scrolls sideways when the chips do not all fit */
+@media(max-width:1000px){
+  .secnav::after{
+    content:""; position:absolute; top:0; bottom:1px; right:0; width:40px; pointer-events:none;
+    background:linear-gradient(90deg,rgba(10,10,12,0),rgba(10,10,12,.95));
+  }
+}
+.secnav .wrap{
+  display:flex; align-items:center; gap:7px; padding-block:9px;
+  overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; scroll-behavior:smooth;
+}
+.secnav .wrap::-webkit-scrollbar{display:none}
+.secnav .glabel{
+  flex:none; font-family:var(--display); font-size:10px; font-weight:700;
+  letter-spacing:.15em; text-transform:uppercase; color:var(--fg-faint); padding-right:3px;
+}
+.secnav .sep{flex:none; width:1px; align-self:stretch; background:var(--line); margin-inline:7px}
+.secnav a{
+  flex:none; display:inline-flex; align-items:center; min-height:36px;
+  text-decoration:none; font-size:13.5px; font-weight:600; color:var(--fg-dim);
+  border:1px solid var(--line); border-radius:999px; padding:6px 14px; white-space:nowrap;
+  transition:color .14s ease, border-color .14s ease, background .14s ease;
+}
+.secnav a:hover{color:var(--fg); border-color:var(--fg-faint)}
+.secnav a.active{background:var(--red); border-color:var(--red); color:#fff}
+.secnav a.is-contact{border-color:rgba(215,37,34,.55); color:#FFA9A5}
+.secnav a.is-contact.active{color:#fff}
+/* anchors land clear of both sticky bars */
+[id]{scroll-margin-top:132px}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){ html{scroll-behavior:auto} .secnav .wrap{scroll-behavior:auto} }
 
 /* ---------- hero ---------- */
 .hero{position:relative; overflow:hidden; background:var(--ink); padding-block:clamp(40px,5vw,70px) 0}
@@ -447,6 +477,7 @@ footer a:hover{color:var(--fg)}
 </div>
 
 <!-- ====== header ====== -->
+<div class="sticky-top">
 <header class="site">
   <div class="wrap">
     <a class="brand" href="#top">
@@ -456,17 +487,26 @@ footer a:hover{color:var(--fg)}
         <span>Internet &amp; Streaming</span>
       </span>
     </a>
-    <nav class="main">
-      <a href="#contact" data-es="Contacto">Contact</a>
-      <a href="#plans" data-es="Planes">Plans</a>
-      <a href="#streaming" data-es="Streaming">Streaming</a>
-      <a href="#about" data-es="Nosotros">About</a>
-      <a href="#faq" data-es="Preguntas">FAQ</a>
-    </nav>
     <a class="btn btn-ghost" href="https://wa.me/14155953051" target="_blank" rel="noopener" data-es="WhatsApp">WhatsApp</a>
     <a class="btn btn-red" href="tel:+14155953051" data-es="Llama ahora">Call now</a>
   </div>
 </header>
+
+<nav class="secnav" id="secnav" aria-label="Sections">
+  <div class="wrap" id="secnav-scroll">
+    <span class="glabel" data-es="Servicio">Service</span>
+    <a href="#plans" data-es="Planes y precios">Plans &amp; pricing</a>
+    <a href="#streaming" data-es="Streaming">Streaming</a>
+    <a href="#coverage" data-es="Cobertura">Coverage</a>
+    <a href="#faq" data-es="Preguntas frecuentes">FAQ</a>
+    <span class="sep" aria-hidden="true"></span>
+    <span class="glabel" data-es="Empresa">Company</span>
+    <a href="#about" data-es="Sobre nosotros">About us</a>
+    <a href="#energy" data-es="Energía">Energy</a>
+    <a class="is-contact" href="#contact" data-es="Contacto">Contact</a>
+  </div>
+</nav>
+</div>
 
 <!-- ====== hero ====== -->
 <section class="hero" id="top">
@@ -1229,6 +1269,58 @@ footer a:hover{color:var(--fg)}
     input.style.height = "44px";
     input.style.height = Math.min(input.scrollHeight, 110) + "px";
   });
+
+  /* ---------------- section directory ---------------- */
+  var stickyTop = document.querySelector(".sticky-top");
+  var navScroll = document.getElementById("secnav-scroll");
+  var navLinks = [].slice.call(document.querySelectorAll(".secnav a[href^='#']"));
+  var sections = navLinks
+    .map(function (a) {
+      return { link: a, el: document.getElementById(a.getAttribute("href").slice(1)) };
+    })
+    .filter(function (pair) { return pair.el; });
+  // the bar is grouped by topic, so sort by document order before tracking position
+  sections.sort(function (a, b) {
+    return a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+  });
+  var lastActive = null;
+
+  function markActiveSection() {
+    var cutoff = (stickyTop ? stickyTop.getBoundingClientRect().height : 110) + 24;
+    var current = null;
+    sections.forEach(function (pair) {
+      if (pair.el.getBoundingClientRect().top <= cutoff) current = pair;
+    });
+    // near the bottom the last section wins, even if its top is above the fold
+    if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 4) {
+      current = sections[sections.length - 1] || current;
+    }
+    if (current === lastActive) return;
+    lastActive = current;
+    navLinks.forEach(function (a) { a.classList.remove("active"); });
+    if (!current) return;
+    current.link.classList.add("active");
+    // keep the active chip visible in the sideways-scrolling bar
+    if (navScroll && navScroll.scrollWidth > navScroll.clientWidth) {
+      var chip = current.link;
+      var left = chip.offsetLeft - 48;
+      var right = chip.offsetLeft + chip.offsetWidth + 48;
+      if (left < navScroll.scrollLeft) navScroll.scrollTo({ left: left, behavior: "smooth" });
+      else if (right > navScroll.scrollLeft + navScroll.clientWidth) {
+        navScroll.scrollTo({ left: right - navScroll.clientWidth, behavior: "smooth" });
+      }
+    }
+  }
+
+  var queued = false;
+  function onScroll() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; markActiveSection(); });
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  markActiveSection();
 })();
 </script>
 <!-- ARTIFACT:BODY-END -->
