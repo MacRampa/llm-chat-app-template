@@ -206,8 +206,10 @@ h1 em{font-style:normal; color:var(--red-hot); display:block}
 .hero-cta{display:flex; gap:12px; flex-wrap:wrap}
 .hero-art{position:relative; min-width:0}
 .hero-art img{
-  width:100%; max-width:430px; margin-inline:auto; position:relative; z-index:1;
-  filter:drop-shadow(0 30px 60px rgba(0,0,0,.65));
+  width:100%; max-width:400px; margin-inline:auto; position:relative; z-index:1;
+  height:auto; aspect-ratio:4/5; object-fit:cover; object-position:50% 15%;
+  border:1px solid var(--line); border-radius:var(--radius-lg);
+  box-shadow:0 30px 64px -22px rgba(0,0,0,.9);
 }
 @media(max-width:860px){
   .hero-grid{grid-template-columns:1fr; gap:0}
@@ -530,7 +532,7 @@ footer a:hover{color:var(--fg)}
       </div>
     </div>
     <div class="hero-art">
-      <img src="assets/hero-customer.webp" alt="ADE Internet customer online at home" width="760" height="753" fetchpriority="high">
+      <img src="assets/hero-customer.webp" alt="ADE Internet customer online at home" width="800" height="1000" fetchpriority="high">
     </div>
   </div>
 </section>
